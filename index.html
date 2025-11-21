@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐾 APPLE價格POP輸出系統 (字型選單版)</title>
+    <title>🐾 APPLE價格POP輸出系統 (公開版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- SheetJS 用於解析 Excel -->
@@ -353,15 +353,11 @@
                     </button>
                 </div>
                 
-                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                    <label class="block text-xs font-bold mb-2">背景圖片設定</label>
-                    <div class="flex items-center gap-2">
-                        <input type="file" id="bg-upload" accept="image/*" onchange="updateBackground(this)" class="text-xs w-full">
-                        <button onclick="clearBackground()" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-1 px-2 rounded whitespace-nowrap transition">
-                            清除
-                        </button>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">如未選取會自動套用預設底圖</p>
+                <!-- 背景顯示狀態 (唯讀) -->
+                <div class="mt-4 p-3 bg-gray-100 border border-gray-200 rounded text-center">
+                    <p class="text-xs text-gray-500 font-bold">
+                        <i class="fas fa-image mr-1"></i> 背景圖片：系統預設 (background.jpg)
+                    </p>
                 </div>
 
                 <!-- 自訂字型設定 (精簡版) -->
@@ -462,6 +458,7 @@
 
         let cards = [];
         let currentSize = 'small';
+        // 強制預設背景
         let currentBackgroundImage = 'url("background.jpg")'; 
         let currentFontFamily = '"Noto Sans TC", sans-serif'; 
 
@@ -520,7 +517,6 @@
                 fontFace.load().then(function(loadedFace) {
                     document.fonts.add(loadedFace);
                     currentFontFamily = `"${fontName}", "Noto Sans TC", sans-serif`;
-                    // alert(`字型載入成功：${selector.options[selector.selectedIndex].text}`);
                 }).catch(function(error) {
                     alert(`找不到檔案 "${filename}" \n請確認檔案已放入同一資料夾，且檔名完全一致！`);
                     console.error(error);
@@ -726,21 +722,6 @@
             } else {
                 alert('找不到該頁面');
             }
-        }
-
-        function updateBackground(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentBackgroundImage = `url("${e.target.result}")`;
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function clearBackground() {
-            document.getElementById('bg-upload').value = '';
-            currentBackgroundImage = 'url("background.jpg")';
         }
 
         function openBatchModal() {
