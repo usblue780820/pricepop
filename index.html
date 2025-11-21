@@ -264,10 +264,8 @@
     <!-- Header -->
     <header class="bg-white shadow-md p-4 z-10 flex items-center justify-between no-print">
         <div class="flex items-center gap-3">
-            <!-- 預設 Icon -->
-            <div class="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                <i class="fas fa-tags"></i>
-            </div>
+            <!-- 預設 Icon (使用 icon256.ico) -->
+            <img src="icon256.ico" onerror="this.style.display='none'" alt="Logo" class="h-10 w-10 object-contain">
             <h1 class="text-2xl font-bold text-gray-800">APPLE價格POP輸出系統</h1>
         </div>
         <div class="text-sm text-gray-500">
@@ -353,11 +351,14 @@
                     </button>
                 </div>
                 
-                <!-- 背景顯示狀態 (唯讀) -->
-                <div class="mt-4 p-3 bg-gray-100 border border-gray-200 rounded text-center">
-                    <p class="text-xs text-gray-500 font-bold">
-                        <i class="fas fa-image mr-1"></i> 背景圖片：系統預設 (background.jpg)
-                    </p>
+                <!-- 背景設定 (唯讀提示) -->
+                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                    <label class="block text-xs font-bold mb-2 text-gray-700">背景圖片設定</label>
+                    <div class="flex items-center gap-2 text-gray-500 bg-white p-2 rounded border border-gray-200">
+                        <i class="fas fa-image text-yellow-500"></i>
+                        <span class="text-xs">系統預設 (background.jpg)</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">如未選取會自動套用預設底圖</p>
                 </div>
 
                 <!-- 自訂字型設定 (精簡版) -->
@@ -367,7 +368,7 @@
                     <!-- 選單選擇區 -->
                     <div class="mb-1">
                         <label class="text-xs text-gray-600 mb-1 block">選擇資料夾內的字型：</label>
-                        <select id="font-selector" onchange="changeLocalFont()" class="w-full border rounded p-1 text-sm mb-1">
+                        <select id="font-selector" onchange="changeLocalFont()" class="w-full border rounded p-1 text-sm mb-1 focus:ring-2 focus:ring-purple-500 outline-none">
                             <!-- JS 會自動填入選項 -->
                         </select>
                     </div>
