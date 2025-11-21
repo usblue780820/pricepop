@@ -264,13 +264,21 @@
     <!-- Header -->
     <header class="bg-white shadow-md p-4 z-10 flex items-center justify-between no-print">
         <div class="flex items-center gap-3">
-            <!-- 預設 Icon -->
+            <!-- 預設 Icon (使用 icon256.ico) -->
             <img src="icon256.ico" onerror="this.style.display='none'" alt="Logo" class="h-10 w-10 object-contain">
             <h1 class="text-2xl font-bold text-gray-800">APPLE價格POP輸出系統</h1>
         </div>
-        <div class="text-sm">
+        <div class="flex items-center gap-4">
+            <!-- 店貓展示區 (插入在超連結前方) -->
+            <div class="flex gap-2">
+                <img src="1.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓1">
+                <img src="2.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓2">
+                <img src="3.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓3">
+                <img src="4.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓4">
+            </div>
+
             <!-- Instagram 連結 -->
-             <a href="https://www.instagram.com/tsikkong/?igsh=MTdqYmV6YmNoeGhpZg%3D%3D&utm_source=qr#" target="_blank" class="flex items-center gap-2 text-blue-500 hover:text-blue-700 hover:underline transition-colors font-medium">
+            <a href="https://www.instagram.com/tsikkong/?igsh=MTdqYmV6YmNoeGhpZg%3D%3D&utm_source=qr#" target="_blank" class="flex items-center gap-2 text-blue-500 hover:text-blue-700 hover:underline transition-colors font-medium text-sm">
                 <i class="fab fa-instagram text-xl"></i>
                 <span>沒有要斗內，但可以點進來支持一下</span>
             </a>
