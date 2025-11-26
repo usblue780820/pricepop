@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐾 APPLE價格POP輸出系統 (公開版)</title>
+    <title>🐾 APPLE價格POP輸出系統</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- SheetJS 用於解析 Excel -->
+    <!-- 新增 SheetJS 用於解析 Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
@@ -27,36 +27,43 @@
         .a4-sheet {
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin: 0 auto 20px auto;
+            margin: 0 auto 20px auto; /* 螢幕上置中 */
             position: relative;
             overflow: hidden;
+            /* 保持列印時背景圖可見 */
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
 
         /* A4 尺寸定義 */
-        .sheet-portrait { width: 210mm; height: 297mm; }
-        .sheet-landscape { width: 297mm; height: 210mm; }
+        .sheet-portrait {
+            width: 210mm;
+            height: 297mm;
+        }
+        .sheet-landscape {
+            width: 297mm;
+            height: 210mm;
+        }
 
         /* 網格佈局容器 */
         .grid-container {
             display: grid;
             width: 100%;
             height: 100%;
-            padding: 10mm;
+            padding: 10mm; /* 預覽時保持較寬鬆的視覺 */
             box-sizing: border-box;
             justify-content: center;
             align-content: start;
-            gap: 2mm;
+            gap: 2mm; /* 預覽時卡片間距 */
         }
 
         /* 卡片通用樣式 */
         .card {
-            border: 1px dashed #ccc;
+            border: 1px dashed #ccc; /* 預覽時的裁切線 */
             position: relative;
             box-sizing: border-box;
             overflow: hidden;
-            background-color: rgba(255,255,255,0.8);
+            background-color: rgba(255,255,255,0.8); /* 微微透明白底 */
         }
 
         /* 單張卡片刪除按鈕 */
@@ -100,11 +107,13 @@
             background: #b91c1c;
         }
 
+        /* 強制文字基線對齊的輔助類別 */
         .highlight {
             color: #cc3300;
             vertical-align: baseline;
         }
 
+        /* 特定尺寸樣式 */
         /* 1. 小卡 */
         .card-small {
             width: 85mm;
@@ -117,14 +126,14 @@
             line-height: 1.2;
         }
         .card-small .main-text {
-            font-size: 12pt;
+            font-size: 12pt; /* 品名、入、元 12pt */
             font-weight: bold;
             color: #000;
             text-align: left;
         }
         .card-small .highlight {
             color: #cc3300;
-            font-size: 18pt;
+            font-size: 18pt; /* 組數與價格 18pt */
         }
         .card-small .note {
             font-size: 9pt;
@@ -134,11 +143,12 @@
             width: 100%;
         }
 
-        /* 2. 中卡 */
+        /* 2. 中卡 - 修改內距，讓文字整體上移 */
         .card-medium {
             width: 125mm;
             height: 55mm;
-            padding: 5mm;
+            /* 上2mm, 右5mm, 下8mm, 左5mm */
+            padding: 2mm 5mm 8mm 5mm; 
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -146,22 +156,23 @@
             line-height: 1.3;
         }
         .card-medium .main-text {
-            font-size: 18pt;
+            font-size: 18pt; /* 品名 18pt */
             font-weight: bold;
             color: #000;
             text-align: left;
             vertical-align: baseline;
         }
+        /* 中卡特別指定的價格與組數樣式 */
         .card-medium .highlight {
-            font-size: 24pt;
+            font-size: 24pt; /* 價格與組數 24pt */
             color: #cc3300;
             vertical-align: baseline;
         }
         .card-medium .note {
-            font-size: 12pt;
+            font-size: 10pt; /* 修改：備註 10pt */
             font-weight: normal;
             color: #000;
-            margin-top: 4px;
+            margin-top: 0px; /* 修改：間距縮小至 0 */
             width: 100%;
         }
 
@@ -175,35 +186,38 @@
             justify-content: space-between;
         }
         .card-large .line-name {
-            font-size: 42pt;
+            font-size: 42pt; /* 品名 42pt */
             font-weight: bold;
             color: #000;
             text-align: center;
             width: 100%;
-            white-space: nowrap;
+            white-space: nowrap; /* 堅持不換行 */
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .card-large .line-note {
-            font-size: 24pt;
+            font-size: 24pt; /* 備註 24pt */
             color: #000;
             text-align: right;
             width: 100%;
         }
         .card-large .line-price {
-            font-size: 42pt;
+            font-size: 42pt; /* "特價" "入" "元" 42pt */
             font-weight: bold;
             text-align: center;
             width: 100%;
             color: #000;
+            
+            /* 關鍵修改：使用 Flexbox 強制基線對齊 */
             display: flex;
             justify-content: center;
             align-items: baseline;
         }
         .card-large .highlight {
-            font-size: 54pt;
+            font-size: 54pt; /* 組數、價格數字 54pt */
             color: #cc3300;
         }
+
 
         /* 頁碼標示 */
         .page-number {
@@ -214,6 +228,7 @@
             color: #999;
         }
 
+        /* 預覽縮放容器 */
         #preview-area {
             transform-origin: top center;
             transition: transform 0.2s;
@@ -221,41 +236,109 @@
 
         /* === 列印核心修正 === */
         @media print {
-            @page { margin: 0; }
-            body * { visibility: hidden; }
-            .no-print, header, aside, .page-number, .page-delete-btn { display: none !important; }
-            html, body {
-                width: 100%; height: auto; overflow: visible !important;
-                display: block !important; margin: 0 !important; padding: 0 !important; background: white !important;
+            /* 強制歸零頁面邊距 */
+            @page {
+                margin: 0;
             }
+
+            /* 隱藏所有不該印的東西 */
+            body * {
+                visibility: hidden; 
+            }
+            .no-print, header, aside, .page-number, .page-delete-btn {
+                display: none !important;
+            }
+
+            /* 重置 Body 與 HTML */
+            html, body {
+                width: 100%;
+                height: auto; /* 重要：讓高度自動適應 */
+                overflow: visible !important;
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            /* 讓主內容區域可見且重置位置 */
             main {
-                visibility: visible !important; display: block !important; position: static !important;
-                margin: 0 !important; padding: 0 !important; width: 100% !important; height: auto !important;
+                visibility: visible !important;
+                display: block !important;
+                position: static !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                height: auto !important;
                 overflow: visible !important;
             }
+
             #scroll-container {
-                visibility: visible !important; display: block !important; overflow: visible !important;
-                margin: 0 !important; padding: 0 !important;
+                visibility: visible !important;
+                display: block !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
+
+            /* 調整列印時的網格容器邊距 */
             .grid-container {
-                padding-bottom: 0 !important; padding-left: 10mm !important; padding-right: 10mm !important;
-                gap: 0.3mm !important; height: auto !important;
+                /* 基本設定：左右邊距 10mm，底部 0，間距 0.3mm */
+                padding-bottom: 0 !important;
+                padding-left: 10mm !important;
+                padding-right: 10mm !important;
+                gap: 0.3mm !important;
+                height: auto !important;
             }
-            .grid-small { padding-top: 1mm !important; }
-            .grid-medium, .grid-large { padding-top: 5mm !important; }
-            #preview-area, #preview-area * { visibility: visible !important; }
+
+            /* 針對不同尺寸設定不同的上方邊距 */
+            .grid-small {
+                padding-top: 1mm !important;
+            }
+            
+            .grid-medium, 
+            .grid-large {
+                padding-top: 5mm !important;
+            }
+
+            /* 預覽區重置 */
+            #preview-area, #preview-area * {
+                visibility: visible !important;
+            }
             #preview-area {
-                position: static !important; transform: none !important; width: 100% !important;
-                margin: 0 !important; padding: 0 !important; left: 0 !important; top: 0 !important;
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                left: 0 !important;
+                top: 0 !important;
             }
+
+            /* A4 紙張樣式重置 */
             .a4-sheet {
-                margin: 0 !important; box-shadow: none !important; border: none !important;
-                position: relative !important; left: 0 !important; top: 0 !important; height: auto !important;
-                min-height: 200mm; page-break-after: always;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                position: relative !important;
+                left: 0 !important;
+                top: 0 !important;
+                height: auto !important; 
+                min-height: 200mm;
+                page-break-after: always;
             }
-            .a4-sheet:last-of-type { page-break-after: auto !important; page-break-inside: avoid !important; margin-bottom: 0 !important; }
-            .card { border: none !important; }
-            .delete-btn { display: none !important; }
+            
+            .a4-sheet:last-of-type {
+                page-break-after: auto !important;
+                page-break-inside: avoid !important;
+                margin-bottom: 0 !important;
+            }
+
+            .card {
+                border: none !important; 
+            }
+            .delete-btn {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -264,24 +347,12 @@
     <!-- Header -->
     <header class="bg-white shadow-md p-4 z-10 flex items-center justify-between no-print">
         <div class="flex items-center gap-3">
-            <!-- 預設 Icon -->
-            <img src="icon256.ico" onerror="this.style.display='none'" alt="Logo" class="h-10 w-10 object-contain">
+            <!-- 修改這裡：改用圖片 -->
+            <img src="icon256.ico" alt="Logo" class="h-10 w-10 object-contain">
             <h1 class="text-2xl font-bold text-gray-800">APPLE價格POP輸出系統</h1>
         </div>
-        <div class="flex items-center gap-4">
-            <!-- 店貓展示區 (插入在超連結前方) -->
-            <div class="flex gap-2">
-                <img src="1.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓1">
-                <img src="2.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓2">
-                <img src="3.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓3">
-                <img src="4.ico" onerror="this.style.display='none'" class="h-8 w-8 rounded-full object-cover border border-gray-200 shadow-sm hover:scale-110 transition-transform duration-200" title="店貓4">
-            </div>
-
-            <!-- Instagram 連結 -->
-            <a href="https://www.instagram.com/tsikkong/?igsh=MTdqYmV6YmNoeGhpZg%3D%3D&utm_source=qr#" target="_blank" class="flex items-center gap-2 text-blue-500 hover:text-blue-700 hover:underline transition-colors font-medium text-sm">
-                <i class="fab fa-instagram text-xl"></i>
-                <span>沒有要斗內，但可以點進來支持一下</span>
-            </a>
+        <div class="text-sm text-gray-500">
+            僅限湖口中山店好朋友使用
         </div>
     </header>
 
@@ -363,24 +434,27 @@
                     </button>
                 </div>
                 
-                <!-- 背景設定 (唯讀提示) -->
-                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-center">
-                    <p class="text-xs text-gray-500 font-bold">
-                        <i class="fas fa-image mr-1"></i> 背景圖片：系統預設 (background.jpg)
-                    </p>
+                <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                    <label class="block text-xs font-bold mb-2">背景圖片設定</label>
+                    <div class="flex items-center gap-2">
+                        <input type="file" id="bg-upload" accept="image/*" onchange="updateBackground(this)" class="text-xs w-full">
+                        <button onclick="clearBackground()" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-1 px-2 rounded whitespace-nowrap transition">
+                            清除
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">預設讀取同一資料夾 background.jpg</p>
                 </div>
 
-                <!-- 自訂字型設定 (精簡版) -->
+                <!-- 自訂字型設定 -->
                 <div class="mt-4 p-3 bg-purple-50 border border-purple-200 rounded">
                     <label class="block text-xs font-bold mb-2">自訂字型設定</label>
-                    
-                    <!-- 選單選擇區 -->
-                    <div class="mb-1">
-                        <label class="text-xs text-gray-600 mb-1 block">選擇資料夾內的字型：</label>
-                        <select id="font-selector" onchange="changeLocalFont()" class="w-full border rounded p-1 text-sm mb-1 focus:ring-2 focus:ring-purple-500 outline-none">
-                            <!-- JS 會自動填入選項 -->
-                        </select>
+                    <div class="flex items-center gap-2">
+                        <input type="file" id="font-upload" accept=".ttf,.otf,.woff,.woff2" onchange="updateFont(this)" class="text-xs w-full">
+                        <button onclick="clearFont()" class="bg-gray-400 hover:bg-gray-500 text-white text-xs py-1 px-2 rounded whitespace-nowrap transition">
+                            清除
+                        </button>
                     </div>
+                    <p class="text-xs text-gray-500 mt-1">支援 .ttf, .otf, .woff (僅套用至新牌卡)</p>
                 </div>
             </div>
 
@@ -428,6 +502,8 @@
     <div id="batch-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 no-print">
         <div class="bg-white p-6 rounded-lg shadow-xl w-1/2 h-3/4 flex flex-col">
             <h2 class="text-xl font-bold mb-2">批量匯入</h2>
+            
+            <!-- 頁籤切換 (簡易版) -->
             <div class="flex gap-4 mb-4 border-b">
                 <div class="pb-2 border-b-2 border-blue-500 font-bold cursor-pointer text-blue-600">文字輸入</div>
                 <div class="pb-2 text-gray-500 text-sm self-end ml-auto">支援 Excel (.xls, .xlsx)</div>
@@ -453,89 +529,41 @@
     </div>
 
     <script>
-        // ==========================================
-        // 【使用者設定區】
-        // 資料夾內實際存在的字型清單
-        // ==========================================
-        const fontList = [
-            { label: '預設黑體 (Noto Sans TC)', filename: 'default' },
-            { label: '宇文天穹', filename: '宇文天穹.ttf' },
-            { label: '清松手寫體 4', filename: '清松手寫體 4.ttf' },
-            { label: '源泉圓體-b', filename: '源泉圓體-b.otf' },
-            { label: '霞鶩漫黑', filename: '霞鶩漫黑.ttf' }
-        ];
-        // ==========================================
-
+        // 資料狀態
         let cards = [];
         let currentSize = 'small';
-        // 強制預設背景
+        // 目前選擇的設定 (作為新卡片的預設值)
         let currentBackgroundImage = 'url("background.jpg")'; 
-        let currentFontFamily = '"Noto Sans TC", sans-serif'; 
+        let currentFontFamily = '"Noto Sans TC", sans-serif'; // 預設字型
 
         const configs = {
             small: {
-                name: '小卡', width: 85, height: 55, sheetClass: 'sheet-portrait', rows: 5, cols: 2, limit: 10
+                name: '小卡',
+                width: 85, height: 55,
+                sheetClass: 'sheet-portrait',
+                rows: 5, cols: 2,
+                limit: 10
             },
             medium: {
-                name: '中卡', width: 125, height: 55, sheetClass: 'sheet-landscape', rows: 3, cols: 2, limit: 6
+                name: '中卡',
+                width: 125, height: 55,
+                sheetClass: 'sheet-landscape',
+                rows: 3, cols: 2,
+                limit: 6
             },
             large: {
-                name: '大卡', width: 185, height: 65, sheetClass: 'sheet-portrait', rows: 4, cols: 1, limit: 4
+                name: '大卡',
+                width: 185, height: 65,
+                sheetClass: 'sheet-portrait',
+                rows: 4, cols: 1,
+                limit: 4
             }
         };
 
         window.onload = function() {
-            initFontSelector();
             render();
             updateZoom(0.6);
         };
-
-        // 初始化字型選單
-        function initFontSelector() {
-            const selector = document.getElementById('font-selector');
-            selector.innerHTML = '';
-            fontList.forEach(font => {
-                const option = document.createElement('option');
-                option.value = font.filename;
-                option.text = font.label;
-                selector.appendChild(option);
-            });
-        }
-
-        // 切換本地字型
-        function changeLocalFont() {
-            const selector = document.getElementById('font-selector');
-            const filename = selector.value;
-
-            if (filename === 'default') {
-                currentFontFamily = '"Noto Sans TC", sans-serif';
-                return;
-            }
-
-            // 定義唯一的 FontFace 名稱，避免衝突
-            const fontName = 'LocalFont_' + filename.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, '');
-            const fontUrl = `url("${filename}")`;
-            
-            // 檢查瀏覽器是否已經載入過這個字型
-            const isLoaded = Array.from(document.fonts).some(f => f.family === fontName);
-
-            if (isLoaded) {
-                currentFontFamily = `"${fontName}", "Noto Sans TC", sans-serif`;
-            } else {
-                // 嘗試載入
-                const fontFace = new FontFace(fontName, fontUrl);
-                fontFace.load().then(function(loadedFace) {
-                    document.fonts.add(loadedFace);
-                    currentFontFamily = `"${fontName}", "Noto Sans TC", sans-serif`;
-                }).catch(function(error) {
-                    alert(`找不到檔案 "${filename}" \n請確認檔案已放入同一資料夾，且檔名完全一致！`);
-                    console.error(error);
-                    // 失敗則切回預設
-                    selector.value = 'default';
-                    currentFontFamily = '"Noto Sans TC", sans-serif';
-                });
-            }
-        }
 
         function changeSize() {
             let selectedSize = '';
@@ -577,6 +605,7 @@
                 return;
             }
 
+            // 新增卡片時，寫入當時的背景與字型設定
             cards.push({ 
                 name, qty, price, note, 
                 bg: currentBackgroundImage,
@@ -592,6 +621,7 @@
                 return;
             }
             const last = cards[cards.length - 1];
+            // 複製內容，但套用"目前設定"的背景和字型
             cards.push({ 
                 name: last.name,
                 qty: last.qty,
@@ -680,6 +710,7 @@
             const div = document.createElement('div');
             div.className = `card card-${size} pop-bg`;
             
+            // 套用該卡片獨立的背景與字型
             div.style.backgroundImage = data.bg || 'url("background.jpg")';
             div.style.fontFamily = data.font || '"Noto Sans TC", sans-serif';
 
@@ -732,6 +763,55 @@
             } else {
                 alert('找不到該頁面');
             }
+        }
+
+        function updateBackground(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentBackgroundImage = `url("${e.target.result}")`;
+                    // 這裡不呼叫 render()，所以舊卡片不會變
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearBackground() {
+            document.getElementById('bg-upload').value = '';
+            currentBackgroundImage = 'url("background.jpg")';
+            // 這裡不呼叫 render()
+        }
+
+        // 新增：更新自訂字型
+        function updateFont(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fontData = e.target.result;
+                    // 為了支援多個字型共存，每次產生獨立的 FontFace 名稱
+                    const fontName = 'CustomFont_' + Date.now();
+                    const fontFace = new FontFace(fontName, fontData);
+                    
+                    fontFace.load().then(function(loadedFace) {
+                        document.fonts.add(loadedFace);
+                        // 設定當前字型，只會影響之後新增的牌卡
+                        currentFontFamily = `"${fontName}", "Noto Sans TC", sans-serif`;
+                        alert('字型已載入！之後新增的牌卡將使用此字型。');
+                    }).catch(function(error) {
+                        alert('字型載入失敗，請確認檔案格式正確。');
+                        console.error(error);
+                    });
+                }
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        // 新增：清除自訂字型
+        function clearFont() {
+            document.getElementById('font-upload').value = '';
+            currentFontFamily = '"Noto Sans TC", sans-serif';
+            alert('字型設定已清除，回復預設。');
         }
 
         function openBatchModal() {
