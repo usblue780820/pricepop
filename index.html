@@ -138,12 +138,12 @@
         .card-medium {
             width: 125mm;
             height: 55mm;
-            padding: 5mm;
+            padding: 0mm 5mm 8mm 5mm; /* 上0, 右5, 下8, 左5 */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
-            line-height: 1.3;
+            line-height: 1.1; /* 行高縮小 */
         }
         .card-medium .main-text {
             font-size: 18pt;
@@ -158,10 +158,10 @@
             vertical-align: baseline;
         }
         .card-medium .note {
-            font-size: 12pt;
+            font-size: 10pt; /* 字體縮小 */
             font-weight: normal;
             color: #000;
-            margin-top: 4px;
+            margin-top: 0px; /* 間距歸零 */
             width: 100%;
         }
 
@@ -268,8 +268,6 @@
             <img src="icon256.ico" onerror="this.style.display='none'" alt="Logo" class="h-10 w-10 object-contain">
             <h1 class="text-2xl font-bold text-gray-800">APPLE價格POP輸出系統</h1>
         </div>
-        
-        <!-- 右側：店貓圖示 + 連結 -->
         <div class="flex items-center gap-4">
             <!-- 店貓展示區 (插入在超連結前方) -->
             <div class="flex gap-2">
