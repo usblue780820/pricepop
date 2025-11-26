@@ -143,17 +143,17 @@
             width: 100%;
         }
 
-        /* 2. 中卡 - 修改內距，讓文字整體上移 */
+        /* 2. 中卡 - 修改內距與行高，讓文字整體上移 */
         .card-medium {
             width: 125mm;
             height: 55mm;
-            /* 上2mm, 右5mm, 下8mm, 左5mm */
-            padding: 2mm 5mm 8mm 5mm; 
+            /* 修改：上方內距改為 0mm，盡量往上靠 */
+            padding: 0mm 5mm 5mm 5mm; 
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
-            line-height: 1.3;
+            line-height: 1.1; /* 修改：縮小行高，讓內容更緊湊 */
         }
         .card-medium .main-text {
             font-size: 18pt; /* 品名 18pt */
@@ -169,10 +169,10 @@
             vertical-align: baseline;
         }
         .card-medium .note {
-            font-size: 10pt; /* 修改：備註 10pt */
+            font-size: 10pt; /* 備註 10pt */
             font-weight: normal;
             color: #000;
-            margin-top: 0px; /* 修改：間距縮小至 0 */
+            margin-top: 0px; /* 間距 0 */
             width: 100%;
         }
 
