@@ -109,12 +109,12 @@
         .card-small {
             width: 85mm;
             height: 55mm;
-            padding: 4mm;
+            padding: 0mm 5mm 8mm 5mm; /* 上0, 右5, 下8, 左5 */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
-            line-height: 1.2;
+            line-height: 1.1; /* 行高縮小 */
         }
         .card-small .main-text {
             font-size: 12pt;
@@ -127,10 +127,10 @@
             font-size: 18pt;
         }
         .card-small .note {
-            font-size: 9pt;
+            font-size: 10pt; /* 調整為 10pt */
             font-weight: normal;
             color: #000;
-            margin-top: 2px;
+            margin-top: 0px; /* 間距歸零 */
             width: 100%;
         }
 
@@ -138,7 +138,7 @@
         .card-medium {
             width: 125mm;
             height: 55mm;
-            padding: 0mm 5mm 8mm 5mm;
+            padding: 0mm 5mm 8mm 5mm; /* 上0, 右5, 下8, 左5 */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
