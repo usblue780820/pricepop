@@ -165,14 +165,15 @@
             width: 100%;
         }
 
-        /* 3. 大卡 */
+        /* 3. 大卡修正版 */
         .card-large {
             width: 185mm;
             height: 65mm;
-            padding: 2mm 5mm;
+            /* 上方給 8mm 空間確保字不被切，底部留 2mm */
+            padding: 8mm 5mm 2mm 5mm;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
         }
         .card-large .line-name {
             font-size: 42pt;
@@ -183,26 +184,37 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            /* 收緊行高，避免佔用太多垂直空間 */
+            line-height: 1.1; 
+            margin-bottom: 1mm;
         }
         .card-large .line-note {
-            font-size: 24pt;
+            font-size: 20pt;
             color: #000;
             text-align: right;
             width: 100%;
+            line-height: 1.1;
+            /* 關鍵：讓備註下方自動延伸，把價格推到最底 */
+            margin-bottom: auto; 
         }
         .card-large .line-price {
-            font-size: 42pt;
+            font-size: 34pt;
             font-weight: bold;
             text-align: center;
             width: 100%;
             color: #000;
             display: flex;
             justify-content: center;
-            align-items: baseline;
+            /* 讓不同大小的字底部對齊 */
+            align-items: baseline; 
+            /* 收緊行高 */
+            line-height: 1; 
         }
         .card-large .highlight {
-            font-size: 54pt;
+            font-size: 66pt;
             color: #cc3300;
+            /* 確保大數字不會撐開額外高度 */
+            line-height: 1; 
         }
 
         /* 頁碼標示 */
@@ -529,7 +541,8 @@
                     document.fonts.add(loadedFace);
                     currentFontFamily = `"${fontName}", "Noto Sans TC", sans-serif`;
                 }).catch(function(error) {
-                    alert(`找不到檔案 "${filename}" \n請確認檔案已放入同一資料夾，且檔名完全一致！`);
+                    // 為了不讓預覽報錯，這裡使用 console.log 代替 alert
+                    console.log(`找不到檔案 "${filename}" \n請確認檔案已放入同一資料夾，且檔名完全一致！`);
                     console.error(error);
                     // 失敗則切回預設
                     selector.value = 'default';
@@ -550,6 +563,7 @@
             if (selectedSize === currentSize) return;
 
             if (cards.length > 0) {
+                // 在預覽環境中 confirm 可能會被阻擋，這裡簡化邏輯，直接切換或使用自定義 modal (這裡保持原樣)
                 if (confirm('切換後會清除資料')) {
                     cards = [];
                     currentSize = selectedSize;
