@@ -338,6 +338,27 @@
                         <label class="block text-xs font-bold mb-1">品名</label>
                         <input type="text" id="input-name" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="例如：貓罐頭">
                     </div>
+
+                    <!-- 新增：價格類別選擇 -->
+                    <div class="p-2 bg-gray-50 border rounded">
+                        <label class="block text-xs font-bold mb-2 text-gray-700">類別選擇</label>
+                        <div class="flex items-center gap-3 text-sm">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="price-type" value="special" class="mr-1 text-blue-600" checked onchange="toggleCustomInput()">
+                                特價
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="price-type" value="addon" class="mr-1 text-blue-600" onchange="toggleCustomInput()">
+                                加購價
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="radio" name="price-type" value="custom" class="mr-1 text-blue-600" onchange="toggleCustomInput()">
+                                自訂
+                            </label>
+                            <input type="text" id="input-custom-text" disabled maxlength="3" class="border rounded p-1 w-16 text-center text-xs disabled:bg-gray-200 outline-none focus:ring-1 focus:ring-blue-500" placeholder="3字內">
+                        </div>
+                    </div>
+
                     <div class="flex gap-2">
                         <div class="w-1/3">
                             <label class="block text-xs font-bold mb-1">組數 (選填)</label>
@@ -581,19 +602,52 @@
             }
         }
 
+        // 新增：切換自訂文字輸入框狀態
+        function toggleCustomInput() {
+            const radios = document.getElementsByName('price-type');
+            let selected = 'special';
+            for(let r of radios) {
+                if(r.checked) selected = r.value;
+            }
+            
+            const customInput = document.getElementById('input-custom-text');
+            if (selected === 'custom') {
+                customInput.disabled = false;
+                customInput.focus();
+            } else {
+                customInput.disabled = true;
+                customInput.value = ''; // 選擇其他時清空
+            }
+        }
+
         function addCard() {
             const name = document.getElementById('input-name').value.trim();
             const qty = document.getElementById('input-qty').value.trim();
             const price = document.getElementById('input-price').value.trim();
             const note = document.getElementById('input-note').value.trim();
 
+            // 取得類別資料
+            const typeRadios = document.getElementsByName('price-type');
+            let categoryType = 'special';
+            for (let r of typeRadios) {
+                if(r.checked) categoryType = r.value;
+            }
+            const customText = document.getElementById('input-custom-text').value.trim();
+
             if (!name || !price) {
                 alert('請至少輸入品名與價格！');
+                return;
+            }
+            
+            if (categoryType === 'custom' && !customText) {
+                alert('請輸入自訂文字 (3字內)');
                 return;
             }
 
             cards.push({ 
                 name, qty, price, note, 
+                categoryType,
+                customText,
                 bg: currentBackgroundImage,
                 font: currentFontFamily
             });
@@ -612,6 +666,8 @@
                 qty: last.qty,
                 price: last.price,
                 note: last.note,
+                categoryType: last.categoryType,
+                customText: last.customText,
                 bg: currentBackgroundImage,
                 font: currentFontFamily
             });
@@ -704,12 +760,21 @@
             delBtn.onclick = () => deleteCard(index);
             div.appendChild(delBtn);
 
+            // 判斷顯示文字
+            let labelText = '特價';
+            if (data.categoryType === 'addon') {
+                labelText = '加購價';
+            } else if (data.categoryType === 'custom') {
+                labelText = data.customText || '';
+            }
+
             if (size === 'small' || size === 'medium') {
                 const mainText = document.createElement('div');
                 mainText.className = 'main-text';
                 let qtyHtml = data.qty ? `<span class="highlight qty-val">${data.qty}</span>入` : '';
                 let priceHtml = `<span class="highlight price-val">${data.price}</span>元`;
-                mainText.innerHTML = `${data.name} ${qtyHtml}${priceHtml}`;
+                // 小卡/中卡 增加顯示前綴
+                mainText.innerHTML = `${data.name} ${labelText}${qtyHtml}${priceHtml}`;
                 const noteDiv = document.createElement('div');
                 noteDiv.className = 'note';
                 noteDiv.innerText = data.note;
@@ -726,7 +791,8 @@
                 linePrice.className = 'line-price';
                 let qtyHtml = data.qty ? `<span class="highlight">${data.qty}</span>入` : '';
                 let priceHtml = `<span class="highlight">${data.price}</span>元`;
-                linePrice.innerHTML = `特價${qtyHtml}${priceHtml}`;
+                // 大卡 替換前綴
+                linePrice.innerHTML = `${labelText}${qtyHtml}${priceHtml}`;
                 div.appendChild(lineName);
                 div.appendChild(lineNote);
                 div.appendChild(linePrice);
@@ -820,6 +886,8 @@
                                     qty: qty ? String(qty).trim() : '', 
                                     price: price ? String(price).trim() : '', 
                                     note: note ? String(note).trim() : '',
+                                    categoryType: 'special', // 批量匯入預設為特價
+                                    customText: '',
                                     bg: currentBackgroundImage,
                                     font: currentFontFamily
                                 });
@@ -846,6 +914,8 @@
                         if (name && (price || parts.length > 2)) {
                             cards.push({ 
                                 name, qty, price, note,
+                                categoryType: 'special', // 批量匯入預設為特價
+                                customText: '',
                                 bg: currentBackgroundImage,
                                 font: currentFontFamily
                             });
@@ -901,4 +971,3 @@
     </script>
 </body>
 </html>
-
